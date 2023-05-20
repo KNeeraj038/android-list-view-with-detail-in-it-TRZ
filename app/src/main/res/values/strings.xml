@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">android-list-view</string>
+    <string name="visit">Visit</string>
+    <string name="location">Location</string>
+    <string name="business">Business</string>
+    <string name="industry">Industry</string>
+</resources>
