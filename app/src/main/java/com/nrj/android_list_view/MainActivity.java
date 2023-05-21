@@ -1,55 +1,77 @@
 package com.nrj.android_list_view;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SellerCustomListAdapter mSellerAdapter;
-    ArrayList<String> mProductList;
-    LinearLayout ll_product_item;
-    ListView lvSellerInfo;
-    private List<ImageItem> imageItems;
-    private List<SellerListItems> mItemList;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         init();
 
     }
 
     private void init(){
-        ll_product_item = findViewById(R.id.ll_product_item);
-//        setupProductList();
-        lvSellerInfo = findViewById(R.id.lv_SellerInfo);
-        ArrayList<SellerListItems> itemList = new ArrayList<>();
-        //public SellerListItems(String sellerName, String sellerCompanyName, String businessName, String location, String industry) {
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
 
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-        itemList.add(new SellerListItems("name","company","bussiness", "Location", "Industry"));
-
-        mSellerAdapter = new SellerCustomListAdapter(this, itemList);
-        lvSellerInfo.setAdapter(mSellerAdapter);
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(1);
     }
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
 
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new DiscoverProductsFragment(), "Products");
+        adapter.addFragment(new DiscoverSuppliersFragment(), "Suppliers");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> fragmentList = new ArrayList<>();
+        private final List<String> fragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
-    };
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            fragmentList.add(fragment);
+            fragmentTitleList.add(title);
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragmentTitleList.get(position);
+        }
+    }
 }
